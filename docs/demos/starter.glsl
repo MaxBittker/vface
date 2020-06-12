@@ -32,6 +32,9 @@ void main() {
   // color = getPrevious(rotate(uv, 0.1) * 1.1);
   // }
 
+  if (face < 0.3) {
+    color = cam;
+  }
   // eye black
   if (eye > 0.3) {
     color = black;
