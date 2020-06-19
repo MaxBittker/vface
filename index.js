@@ -13,7 +13,7 @@ let nextDemo = document.getElementById("next");
 
 let demoIndex = demos.indexOf("starter.glsl");
 
-let { paintFace } = require("./src/paint");
+let { paintFace, paintHand, averagePoints } = require("./src/paint");
 const Editor = require("./src/editor.js");
 
 var editor = new Editor();
@@ -171,7 +171,7 @@ setupWebcam({
       manifest: {
         video: {
           type: "video",
-          src: "./lego.ogv",
+          src: "./flower_1.ogv",
           stream: true
         }
       },
@@ -232,7 +232,7 @@ setupWebcam({
         });
 
         regl.frame(function(context) {
-          let keyPoints = getKeyPoints();
+          let { keyPoints, handPoints } = getKeyPoints();
           // regl.clear({
           //   color: [0, 0, 0, 1]
           // });
@@ -242,8 +242,22 @@ setupWebcam({
             // console.log(faceCenter[0]);
             // console.log(keyPoints.midwayBetweenEyes);
             // debugger;
-            ctx = paintFace(keyPoints);
+            // ctx = paintFace(keyPoints);
             faceDetectionTexture.subimage(ctx);
+          }
+
+          if (handPoints) {
+            // console.log(handPoints);
+
+            let palm = [
+              handPoints.pinky[0],
+              handPoints.palmBase[0],
+              handPoints.thumb[0]
+            ];
+            faceCenter = averagePoints(palm);
+            ctx = paintHand(handPoints);
+
+            // faceCenter = handPoints.palmBase[0];
           }
           try {
             texture.destroy();

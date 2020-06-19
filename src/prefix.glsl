@@ -73,6 +73,17 @@ vec3 getPrevious(vec2 pos) {
 
 // Access Facial Feature Masks
 
+vec3 getMask(vec2 pos) {
+  float videoAspect = videoResolution.x / videoResolution.y;
+  vec2 uvA = vec2(pos.x * targetAspect / videoAspect, pos.y);
+  if ((targetAspect) < (videoResolution.x / videoResolution.y)) {
+    uvA = vec2(pos.x, pos.y * videoAspect / targetAspect);
+  }
+  vec2 webcamCoord = (uvA) / 2.0 + vec2(0.5);
+  vec2 flipwcord = vec2(1.) - webcamCoord;
+  return texture2D(maskTex, flipwcord).rgb;
+}
+
 float getFace(vec2 pos) {
   float videoAspect = videoResolution.x / videoResolution.y;
   vec2 uvA = vec2(pos.x * targetAspect / videoAspect, pos.y);

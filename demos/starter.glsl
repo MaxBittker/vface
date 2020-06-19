@@ -1,13 +1,3 @@
-// Welcome to Shaderbooth!
-//    ______           __        ___            __  __
-//   / __/ /  ___ ____/ /__ ____/ _ )___  ___  / /_/ /
-//  _\ \/ _ \/ _ `/ _  / -_) __/ _  / _ \/ _ \/ __/ _ \
-// /___/_//_/\_,_/\_,_/\__/_/ /____/\___/\___/\__/_//_/
-//
-
-// This is an interactive editor for making face filters with WebGL.
-// The language below is called GLSL, you can edit it to change the effect.
-// Press the arrows in the bottom right to see more examples!
 
 void main() {
 
@@ -24,16 +14,20 @@ void main() {
   // color = getPrevious(uv + (cam.rg-cam.bb)*0.1);
 
   // if (face > 0.2) {
-  vec2 pos = uv + 0.5;
-  pos -= faceCenter;
+  vec2 pos = uv - 0.0;
+  // pos -= faceCenter;
   pos = 1.0 - pos;
-  color *= texture2D(videoTexture, pos).rgb;
+  pos /= 2.0;
+  if (getMask(uv).b > 0.1) {
+    color = mix(texture2D(videoTexture, pos).rgb, cam, 0.2);
+  }
+  // color += getMask(uv);
   // or this one
   // color = getPrevious(rotate(uv, 0.1) * 1.1);
   // }
 
   if (face < 0.3) {
-    color = cam;
+    // color = cam;
   }
   // eye black
   if (eye > 0.3) {
@@ -42,10 +36,7 @@ void main() {
   if (eye > 0.6) {
     color = cam;
   }
-  // lipstick
-  if (mouth > 0.4) {
-    // color = cam * red;
-  }
+
   if (mouth > 0.6) {
     color = cam;
   }

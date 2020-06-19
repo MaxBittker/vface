@@ -34,6 +34,7 @@ function drawShape(points) {
   ctx.stroke();
   ctx.fill();
 }
+
 function paintFace(annotations) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.lineCap = "round";
@@ -134,7 +135,45 @@ function paintFace(annotations) {
 
   return ctx;
 }
-module.exports = { paintFace };
+
+function paintHand(handPoints) {
+  let {
+    indexFinger,
+    middleFinger,
+    palmBase,
+    pinky,
+    ringFinger,
+    thumb
+  } = handPoints;
+
+  // ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.lineCap = "round";
+
+  ctx.lineWidth = 0;
+  ctx.strokeStyle = "rgba(1, 1, 1, 0)";
+
+  let wholeHand = [
+    ...indexFinger,
+    ...middleFinger,
+    ...palmBase,
+    ...pinky,
+    ...ringFinger,
+    ...thumb
+  ];
+
+  // let rightEyebrow = [
+  //   ...annotations["rightEyebrowLower"],
+  //   ...annotations["rightEyebrowUpper"]
+  // ];
+
+  ctx.fillStyle = `#048`;
+  drawShape(hull(wholeHand, 1000));
+  // drawShape(hull(rightEyebrow, 20));
+
+  return ctx;
+}
+
+module.exports = { paintFace, paintHand, averagePoints };
 
 /*
 cheekStuff(){

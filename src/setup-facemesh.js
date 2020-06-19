@@ -1,4 +1,6 @@
 let facemesh = require("@tensorflow-models/facemesh");
+let handtrack = require("@tensorflow-models/handpose");
+
 let tf = require("@tensorflow/tfjs-core");
 
 let loader = document.getElementById("loading");
@@ -6,10 +8,12 @@ let model;
 let video = null;
 async function loadModel() {
   // Load the MediaPipe facemesh model.
+  handModel = await handtrack.load();
   model = await facemesh.load({ maxFaces: 1 });
   loader.style = "display:none";
 }
-let keypoints;
+let keyPoints;
+let handPoints;
 let dirty = false;
 async function predictionLoop() {
   if (!model || !video) {
@@ -20,16 +24,25 @@ async function predictionLoop() {
 
   // Pass in a video stream (or an image, canvas, or 3D tensor) to obtain an
   // array of detected faces from the MediaPipe graph.
-  const predictions = await model.estimateFaces(video);
+  let predictions = [];
+  const hands = await handModel.estimateHands(video);
+  if (hands.length == 0 || hands[0].handInViewConfidence < 0.9) {
+    predictions = await model.estimateFaces(video);
+    handPoints = null;
+  } else {
+    handPoints = hands[0].annotations;
+    // console.log(hands);
+    dirty = true;
+  }
   // console.log(tf.backend());
   // console.log(model);
   // console.log(facemesh);
   if (predictions.length > 0) {
     for (let i = 0; i < predictions.length; i++) {
-      keypoints = predictions[i].annotations;
+      keyPoints = predictions[i].annotations;
       dirty = true;
-      // console.log(keypoints);
-      // keypoints = predictions[i].scaledMesh;
+      // console.log(keyPoints);
+      // keyPoints = predictions[i].scaledMesh;
     }
   }
   window.requestAnimationFrame(predictionLoop);
@@ -37,7 +50,7 @@ async function predictionLoop() {
 function getKeyPoints() {
   if (dirty) {
     dirty = false;
-    return keypoints;
+    return { keyPoints, handPoints };
   } else {
     // console.log("saved work");
     return false;
