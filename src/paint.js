@@ -146,7 +146,7 @@ function paintHand(handPoints) {
     thumb
   } = handPoints;
 
-  // ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.lineCap = "round";
 
   ctx.lineWidth = 0;
