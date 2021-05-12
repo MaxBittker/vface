@@ -17,7 +17,7 @@
     "airtable": "^0.8.1",
     "brfs": "^2.0.2",
     "browserify": "^16.5.1",
-    "codemirror": "^5.54.0",
+    "codemirror": "^5.58.2",
     "convex-hull": "^1.0.3",
     "getusermedia": "^2.0.1",
     "glsl-color": "^0.0.1",
